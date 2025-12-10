@@ -6,7 +6,7 @@ use serde_json;
 use crate::{
     cli::args::Args,
     route::{generate::generate_route, route::Route},
-    waypoint::{snoopy::SnoopyWaypoint},
+    waypoint::snoopy::SnoopyWaypoint,
 };
 
 mod cli;
@@ -17,18 +17,21 @@ mod waypoint;
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    let route: Route<SnoopyWaypoint> = generate_route(&args);
+    let route = generate_route(&args);
 
-    match &args.output_file {
-        Some(path) => {
-            let buff = File::create(path)?;
-            serde_json::to_writer(buff, &route.waypoints)?;
-        }
-        None => {
-            let buff = std::io::stdout();
-            serde_json::to_writer(buff, &route.waypoints)?
-        }
-    }
+    dbg!(route);
+    //
+    //
+    // match &args.output_file {
+    //     Some(path) => {
+    //         let buff = File::create(path)?;
+    //         serde_json::to_writer(buff, &route.waypoints)?;
+    //     }
+    //     None => {
+    //         let buff = std::io::stdout();
+    //         serde_json::to_writer(buff, &route.waypoints)?
+    //     }
+    // }
 
     Ok(())
 }

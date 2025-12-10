@@ -1,23 +1,56 @@
-use crate::{
-    cli::{args::Args, coordinate::Coordinate},
-    route::{self, route::Route},
-    waypoint::{self, Waypoint, snoopy::SnoopyWaypoint},
-};
+use std::collections::HashSet;
 
-pub fn generate_route<T: Waypoint>(args: &Args) -> Route<T> {
-    let mut route = Route::new(args.output_format, Vec::with_capacity(args.length));
+use crate::{cli::{args::Args, coordinate::Coordinate}};
 
-    let mut ore_waypoints: Vec<Coordinate> = Vec::new();
+pub fn generate_route(args: &Args) -> Vec<Coordinate> {
+    let mut ores: Vec<Coordinate> = Vec::new();
+    ores.push(Coordinate::new(100, 100, 100));
+    ores.push(Coordinate::new(200, 200, 200));
+    // ores.push(Coordinate::new(300, 300, 300));
+    ores.push(Coordinate::new(400, 400, 400));
+    // ores.push(Coordinate::new(500, 500, 500));
 
-    ore_waypoints.push(Coordinate::new(1, 1, 1));
-    ore_waypoints.push(Coordinate::new(2, 2, 2));
-    ore_waypoints.push(Coordinate::new(3, 3, 3));
-    ore_waypoints.push(Coordinate::new(4, 4, 4));
-
-    while route.waypoints.len() < args.length {
-        let wp = T::new(1, 1, 1);
-        route.add_waypoint(wp);
+    if ores.is_empty() || args.length == 0 {
+        return Vec::new();
     }
 
+    let mut route: Vec<Coordinate> = Vec::with_capacity(args.length);
+    let mut visited: HashSet<Coordinate> = HashSet::new();
+    let mut current = args.origin.closest(&ores).expect("Failed to get closest to");
+    route.push(current);
+    visited.insert(current);
+
+    while route.len() < args.length {
+        println!("<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>");
+        dbg!(&current);
+        dbg!(&visited);
+
+        match next_waypoint(&ores, &current, &visited) {
+            Some(next) => {
+                current = next.clone();
+                visited.insert(next.clone());
+                route.push(next);
+            }
+            None => break,
+        }
+    }
+
+    dbg!(&route);
+
     route
+}
+
+fn next_waypoint(
+    ores: &Vec<Coordinate>,
+    current: &Coordinate,
+    visited: &HashSet<Coordinate>,
+) -> Option<Coordinate> {
+    ores.iter()
+        .filter(|coordinate| !visited.contains(*coordinate))
+        .min_by(|a, b| {
+            let da = current.distance_to(a);
+            let db = current.distance_to(b);
+            da.partial_cmp(&db).unwrap()
+        })
+        .map(|c| c.clone())
 }
