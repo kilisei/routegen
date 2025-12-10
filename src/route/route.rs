@@ -1,6 +1,5 @@
 use crate::waypoint::Waypoint;
 
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RouteType {
     Snoopy,
@@ -21,5 +20,3 @@ impl<W: Waypoint> Route<W> {
         self.waypoints.push(wp);
     }
 }
-
-

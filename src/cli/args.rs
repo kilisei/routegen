@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
-use clap::Parser;
 use crate::{cli::coordinate::Coordinate, ore::ore::Ore};
+use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[command(version, about)]
@@ -19,6 +19,5 @@ pub struct Args {
     pub ore: Ore,
 
     #[arg(short, long)]
-    pub output_file: Option<PathBuf>
+    pub output_file: Option<PathBuf>,
 }
-

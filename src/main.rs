@@ -1,15 +1,14 @@
 use clap::Parser;
 
-use crate::{cli::args::Args, route::route::{Route, RouteType}, waypoint::{Waypoint, snoopy::SnoopyWaypoint}};
+use crate::cli::args::Args;
 
-mod waypoint;
-mod route;
 mod cli;
 mod ore;
+mod route;
+mod waypoint;
 
 fn main() {
     let args = Args::parse();
 
     dbg!(&args);
 }
-
