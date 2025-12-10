@@ -16,6 +16,9 @@ pub struct Args {
     #[arg(short, long, default_value_t = 128usize)]
     pub length: usize,
 
+    #[arg(short, long, default_value_t = 44 )]
+    pub min_ores_per_vein: usize,
+
     #[arg(short, long, default_value_t = 7)]
     pub min_vein_distance: usize,
 

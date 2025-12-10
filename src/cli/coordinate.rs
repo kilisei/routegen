@@ -1,10 +1,12 @@
 use std::str::FromStr;
 
-#[derive(Eq, Hash, PartialEq, Clone, Copy, Debug)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Eq, Hash, PartialEq, Clone, Copy, Debug, Serialize,Deserialize)]
 pub struct Coordinate {
-    x: i32,
-    y: i32,
-    z: i32,
+    pub x: i32,
+    pub y: i32,
+    pub z: i32,
 }
 
 impl Coordinate {
@@ -15,21 +17,26 @@ impl Coordinate {
     pub fn closest(&self, others: &Vec<Coordinate>) -> Option<Coordinate> {
         others
             .iter()
-            .min_by(|a, b| {
-                let da = self.distance_to(a);
-                let db = self.distance_to(a);
-
-                da.partial_cmp(&db).unwrap()
-            })
+            .min_by_key(|c| self.distance_to(c))
             .copied()
     }
 
-    pub fn distance_to(&self, other: &Coordinate) -> f64 {
-        let dx = f64::from(self.x - other.x).powi(2);
-        let dy = f64::from(self.y - other.y).powi(2);
-        let dz = f64::from(self.z - other.z).powi(2);
+    pub fn distance_to(&self, other: &Coordinate) -> i32 {
+        let dx = self.x - other.x;
+        let dy = self.y - other.y;
+        let dz = self.z - other.z;
 
-        (dx + dy + dz).sqrt()
+        dx * dx + dy * dy + dz * dz
+    }
+}
+
+impl From<[i32; 3]> for Coordinate {
+    fn from(arr: [i32; 3]) -> Self {
+         Coordinate {
+            x: arr[0],
+            y: arr[1],
+            z: arr[2],
+        }
     }
 }
 
