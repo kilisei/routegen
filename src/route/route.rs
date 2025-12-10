@@ -1,18 +1,19 @@
 use crate::waypoint::Waypoint;
+use clap::ValueEnum;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum RouteType {
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
+pub enum RouteFormat {
     Snoopy,
 }
 
 #[derive(Debug, Clone)]
 pub struct Route<W: Waypoint> {
-    pub format: RouteType,
+    pub format: RouteFormat,
     pub waypoints: Vec<W>,
 }
 
 impl<W: Waypoint> Route<W> {
-    pub fn new(format: RouteType, waypoints: Vec<W>) -> Self {
+    pub fn new(format: RouteFormat, waypoints: Vec<W>) -> Self {
         Self { format, waypoints }
     }
 
