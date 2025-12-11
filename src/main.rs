@@ -4,7 +4,8 @@ use clap::Parser;
 
 use crate::{
     cli::args::Args,
-    route::{generate::generate_route, route::Route}, waypoint::{Waypoint, snoopy::SnoopyWaypoint},
+    route::{generate::generate_route, route::Route},
+    waypoint::{Waypoint, snoopy::SnoopyWaypoint},
 };
 
 mod cli;
@@ -14,12 +15,15 @@ mod waypoint;
 
 fn main() -> Result<()> {
     let args = Args::parse();
+    let area = args.area.first().unwrap().aabb_volume();
+    dbg!(&area);
 
     let route = generate_route(&args);
 
-    let waypoints = route.iter().map(|i| {
-        SnoopyWaypoint::new(i.x, i.y, i.z)
-    }).collect::<Vec<SnoopyWaypoint>>();
+    let waypoints = route
+        .iter()
+        .map(|i| SnoopyWaypoint::new(i.x, i.y, i.z))
+        .collect::<Vec<SnoopyWaypoint>>();
 
     let route = Route::new(args.output_format, waypoints);
 

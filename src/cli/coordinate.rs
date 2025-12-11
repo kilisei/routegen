@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Eq, Hash, PartialEq, Clone, Copy, Debug, Serialize,Deserialize)]
+#[derive(Eq, Hash, PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct Coordinate {
     pub x: i32,
     pub y: i32,
@@ -15,10 +15,7 @@ impl Coordinate {
     }
 
     pub fn closest(&self, others: &Vec<Coordinate>) -> Option<Coordinate> {
-        others
-            .iter()
-            .min_by_key(|c| self.distance_to(c))
-            .copied()
+        others.iter().min_by_key(|c| self.distance_to(c)).copied()
     }
 
     pub fn distance_to(&self, other: &Coordinate) -> i32 {
@@ -32,7 +29,7 @@ impl Coordinate {
 
 impl From<[i32; 3]> for Coordinate {
     fn from(arr: [i32; 3]) -> Self {
-         Coordinate {
+        Coordinate {
             x: arr[0],
             y: arr[1],
             z: arr[2],

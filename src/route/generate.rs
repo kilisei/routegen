@@ -2,34 +2,39 @@ use std::{collections::HashSet, fs};
 
 use serde::{Deserialize, Serialize};
 
-use crate::{cli::{args::Args, coordinate::Coordinate}, ore::ore::Ore};
+use crate::{
+    cli::{args::Args, coordinate::Coordinate},
+    ore::ore::Ore,
+};
 
-#[derive(Serialize,Deserialize, Clone,Copy)]
+#[derive(Serialize, Deserialize, Clone, Copy)]
 struct Center {
     x: i32,
     y: i32,
     z: i32,
 }
-#[derive(Serialize,Deserialize, Clone,Copy)]
+#[derive(Serialize, Deserialize, Clone, Copy)]
 struct Cluster {
     center: Center,
-    count: usize
+    count: usize,
 }
 fn get_file_name(ore: &Ore) -> String {
     match ore {
-        Ore::Coal => "coal".to_string()
+        Ore::Coal => "coal".to_string(),
     }
 }
 
-fn get_ores_coordinates(ore: &Ore)-> Vec<Coordinate> {
+fn get_ores_coordinates(ore: &Ore) -> Vec<Coordinate> {
     let path = format!("./assets/{}_clusters.json", get_file_name(ore));
     let ores = fs::read_to_string(path).unwrap();
     let ores: Vec<Cluster> = serde_json::from_str(&ores).unwrap();
 
-    ores.into_iter().map(|o| {
-        let cord = Coordinate::new(o.center.x,o.center.y,o.center.z);
-        cord
-    }).collect()
+    ores.into_iter()
+        .map(|o| {
+            let cord = Coordinate::new(o.center.x, o.center.y, o.center.z);
+            cord
+        })
+        .collect()
 }
 
 pub fn generate_route(args: &Args) -> Vec<Coordinate> {
@@ -41,7 +46,10 @@ pub fn generate_route(args: &Args) -> Vec<Coordinate> {
 
     let mut route: Vec<Coordinate> = Vec::with_capacity(args.length);
     let mut visited: HashSet<Coordinate> = HashSet::with_capacity(args.length);
-    let mut current = args.origin.closest(&ores).expect("Failed to get closest to");
+    let mut current = args
+        .origin
+        .closest(&ores)
+        .expect("Failed to get closest to origin");
     route.push(current);
     visited.insert(current);
 
@@ -58,7 +66,6 @@ pub fn generate_route(args: &Args) -> Vec<Coordinate> {
 
     route
 }
-
 
 fn next_waypoint(
     ores: &[Coordinate],
